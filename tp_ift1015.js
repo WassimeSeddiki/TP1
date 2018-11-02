@@ -342,7 +342,5 @@ var valExtremes = function(x,y,pas,tailleB){
 
 debutJeu(largeur,hauteur,11,tailleB,colormap,images);
 demineur(hauteur, largeur, nbMines, tailleB);
-
-
     
-    
+    //allo
