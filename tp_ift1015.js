@@ -232,115 +232,130 @@ var colormap =
      { r: 255, g: 255, b: 255 }
     ];
 
-var largeur = 6;
-var hauteur = 6;
-var tailleB = images[0].length;
-var nbMines = 2;
-
-var debutJeu = function(largeur,hauteur,boutonDepart,tailleB,colormap,images){
-    setScreenMode(largeur*tailleB, hauteur*tailleB);
-    for(var k=0; k<largeur; k++){
-        for(var d=0; d< hauteur; d++)
-            bouton(k*tailleB,d*tailleB,boutonDepart,tailleB,colormap,images);
-    }
-};
-
-
-var bouton = function(startX,startY,a,tailleB,colormap,images){
-    for(var i=0; i<tailleB; i++){
-        for(var j=0; j<tailleB; j++){
-            afficherImage(startX+j,startY+i,colormap,colormap[+(images[a][i][j])]);    
+    var largeur = 6;
+    var hauteur = 6;
+    var tailleB = images[0].length;
+    var nbMines = 1;
+    
+    var debutJeu = function(largeur,hauteur,boutonDepart,tailleB,colormap,images){
+        setScreenMode(largeur*tailleB, hauteur*tailleB);
+        for(var k=0; k<largeur; k++){
+            for(var d=0; d< hauteur; d++)
+                bouton(k*tailleB,d*tailleB,boutonDepart,tailleB,colormap,images);
         }
-    }
-};
-	
-var afficherImage = function(x,y,colormap,image){
-    setPixel(x,y,image);
-};
-
-var attendreClic = function(){
-    while(true){
-   	 pause(0.01);
-     var mouse = getMouse();
-        if ( mouse.down == true){
-            return mouse;
-       } 
-	}
-};
-
-var placerMines = function(largeur, hauteur, nbMines, x, y){
-    var minesTableau = Array(hauteur);
-    	for(var l=0; l<hauteur; l++){
-            minesTableau[l] = Array(largeur);
-            	for(var i=0; i<largeur; i++){
-                    minesTableau[l][i] = false;
-                }
-               }
-    minesTableau[Math.floor((y/tailleB))][Math.floor(x/tailleB)] =true;
-    for(var o=1, mines=0; mines<nbMines; o++){
-    	var v =Math.floor( Math.random()*hauteur); 
-    	var w = Math.floor(Math.random()*largeur);
-    	if (minesTableau[v][w] == false ){
-            minesTableau[v][w] = true;
-            mines++;
-        }
-    }
-    minesTableau[Math.floor((y/tailleB))][Math.floor(x/tailleB)] =false;
-    return minesTableau;
-};
-
-
-var demineur = function (hauteur, largeur, nbMines){
-    	var tailleB = 16;
-   		var mouse = attendreClic();
-        var minesTab = placerMines(largeur, hauteur, nbMines,mouse.x, mouse.y);
-        decouverte(minesTab,tailleB);
-};
-
-var pixBouton = function (pixel,tailleB){
-    var pixelABouton = Math.floor(pixel/tailleB);
-    return pixelABouton;
-};
-
-var decouverte = function (minesTab,tailleB){
-    while(true){
-   		var mouse2 = attendreClic();
-        var caseClic =(minesTab[pixBouton(mouse2.y,tailleB)][pixBouton(mouse2.x,tailleB)]); 
-           if (caseClic==false){
-                 analyseCase (mouse2,tailleB,colormap,images,minesTab,largeur,hauteur);
-           }else {bouton((pixBouton(mouse2.x,tailleB))*tailleB,(pixBouton(mouse2.y,tailleB))*tailleB,10,tailleB,colormap,images);
-                  alert("GAME OVER");
-                  break;
-        }
-    }
-};         
-        
-
-var analyseCase = function(mouse2,tailleB,colormap,images,minesTab,hauteur,largeur){
-    var minesPeripherique= 0;
-    var val = valExtremes(mouse2.x,mouse2.y,1,tailleB);
-    	for (var y=val[2]; y<=val[3]; y++){
-        	for (var x=val[0]; x<=val[1]; x++){
-            	if (minesTab[y][x]==true){
-            		minesPeripherique++;
+    };
+    
+    
+    var bouton = function(startX,startY,choixImage,tailleB,colormap,images){
+        for(var i=0; i<tailleB; i++){
+            for(var j=0; j<tailleB; j++){
+                afficherImage(startX+j,startY+i,colormap,colormap[+(images[choixImage][i][j])]);    
             }
         }
-    }
-    if (minesPeripherique>= 0){
-   		 bouton((pixBouton(mouse2.x,tailleB))*tailleB,(pixBouton(mouse2.y,tailleB))*tailleB,minesPeripherique,tailleB,colormap,images);
-    } 
-}; 
-
-var valExtremes = function(x,y,pas,tailleB){
-    var valXMin = Math.max(0,(pixBouton(x,tailleB))-1);
-    var valXMax = Math.min(largeur-1,(pixBouton(x,tailleB))+pas);
-    var valYMin = Math.max(0,(pixBouton(y,tailleB))-1);
-    var valYMax = Math.min(hauteur-1,(pixBouton(y,tailleB))+pas);
-    var val = [valXMin,valXMax,valYMin,valYMax];
-    return val;
-};     
-
-debutJeu(largeur,hauteur,11,tailleB,colormap,images);
-demineur(hauteur, largeur, nbMines, tailleB);
+    };
+        
+    var afficherImage = function(x,y,colormap,image){
+        setPixel(x,y,image);
+    };
     
-    //allo
+    var attendreClic = function(){
+        while(true){
+            pause(0.01);
+         var mouse = getMouse();
+            if ( mouse.down == true){
+                return mouse;
+           } 
+        }
+    };
+    
+    var placerMines = function(largeur, hauteur, nbMines, x, y){
+        var minesTableau = Array(hauteur);
+            for(var l=0; l<hauteur; l++){
+                minesTableau[l] = Array(largeur);
+                    for(var i=0; i<largeur; i++){
+                        minesTableau[l][i] = false;
+                    }
+                   }
+        minesTableau[Math.floor((y/tailleB))][Math.floor(x/tailleB)] =true;
+        for(var o=1, mines=0; mines<nbMines; o++){
+            var v =Math.floor( Math.random()*hauteur); 
+            var w = Math.floor(Math.random()*largeur);
+            if (minesTableau[v][w] == false ){
+                minesTableau[v][w] = true;
+                mines++;
+            }
+        }
+        minesTableau[Math.floor((y/tailleB))][Math.floor(x/tailleB)] =false;
+        return minesTableau;
+    };
+    
+    
+    var demineur = function (hauteur, largeur, nbMines){
+            var tailleB = 16;
+               var mouse = attendreClic();
+            var minesTab = placerMines(largeur, hauteur, nbMines,mouse.x, mouse.y);
+            decouverte(minesTab,tailleB);
+    };
+    
+    var pixBouton = function (pixel,tailleB){
+        var pixelABouton = Math.floor(pixel/tailleB);
+        return pixelABouton;
+    };
+    
+    var decouverte = function (minesTab,tailleB){
+        while(true){
+               var mouse2 = attendreClic();
+            var caseClic =(minesTab[pixBouton(mouse2.y,tailleB)][pixBouton(mouse2.x,tailleB)]); 
+               if (caseClic==false){
+                     analyseCase (mouse2,tailleB,colormap,images,minesTab,largeur,hauteur);
+               }else {bouton((pixBouton(mouse2.x,tailleB))*tailleB,(pixBouton(mouse2.y,tailleB))*tailleB,10,tailleB,colormap,images);
+                      alert("GAME OVER");
+                      break;
+            }
+        }
+    };         
+            
+    
+    var analyseCase = function(mouse2,tailleB,colormap,images,minesTab,hauteur,largeur){
+        print(minesTab);
+        var val = valExtremes(mouse2.x,mouse2.y,1,tailleB);
+        var mines = boutonsPeripherique(mouse2.x,mouse2.y,tailleB,minesTab);
+        if (mines> 0){
+                 bouton((pixBouton(mouse2.x,tailleB))*tailleB,(pixBouton(mouse2.y,tailleB))*tailleB,mines,tailleB,colormap,images);
+         } else {
+                 for (var y=val[2]; y<=val[3]; y++){
+                     for (var x=val[0]; x<=val[1]; x++){
+                             bouton(x*tailleB,y*tailleB,boutonsPeripherique(x*tailleB,y*tailleB,tailleB,minesTab),tailleB,colormap,images);
+                    }
+                 }
+              }
+     };
+     
+     var boutonsPeripherique = function(x,y,tailleB,minesTab){
+         var minesPeripherique=0;
+         var val = valExtremes(x,y,1,tailleB);
+             for (var y=val[2]; y<=val[3]; y++){
+                 for (var x=val[0]; x<=val[1]; x++){
+                     if (minesTab[y][x]==true){
+                         minesPeripherique++;
+                     }
+                 }
+             }
+         return minesPeripherique;
+     }; 
+     
+    var valExtremes = function(x,y,pas,tailleB){
+        var valXMin = Math.max(0,(pixBouton(x,tailleB))-1);
+        var valXMax = Math.min(largeur-1,(pixBouton(x,tailleB))+pas);
+        var valYMin = Math.max(0,(pixBouton(y,tailleB))-1);
+        var valYMax = Math.min(hauteur-1,(pixBouton(y,tailleB))+pas);
+        var val = [valXMin,valXMax,valYMin,valYMax];
+        return val;
+    };     
+    
+    debutJeu(largeur,hauteur,11,tailleB,colormap,images);
+    demineur(hauteur, largeur, nbMines);
+    
+    
+        
+        
